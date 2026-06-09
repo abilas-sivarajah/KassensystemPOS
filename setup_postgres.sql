@@ -1,5 +1,13 @@
 -- PostgreSQL Setup-Skript fuer KassensystemPOS
--- Ausfuehren als: psql -U postgres -f setup_postgres.sql
+-- Ausfuehren als (WICHTIG: Passwort vorher als Umgebungsvariable setzen,
+-- damit der \c-Reconnect funktioniert):
+--   $env:PGPASSWORD = "postgres"
+--   psql -U postgres -f setup_postgres.sql
+
+-- Bei JEDEM Fehler sofort abbrechen. Verhindert, dass die Tabellen
+-- versehentlich in der Datenbank 'postgres' statt in 'Kasse' angelegt
+-- werden, falls der \c-Reconnect unten fehlschlaegt.
+\set ON_ERROR_STOP on
 
 -- Datenbank erstellen
 -- Hinweis: Keine feste Locale (z.B. German_Germany.1252) angeben, da diese
