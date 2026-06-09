@@ -1,0 +1,138 @@
+﻿<Page x:Class="KassensystemPOS.POS"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:KassensystemPOS"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="1000"
+      Title="POS" Loaded="Page_Loaded" Language="DE">
+
+    <Grid Name="parentgrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Name="posGridNumpad"   Grid.Column="1" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Button Grid.Column="3"   Grid.Row="1" Grid.RowSpan="4" Name="btn_CE" Click="btn_CE_Click" >CE</Button>
+            <Button Grid.Column="2"  Grid.Row="0" Grid.ColumnSpan="2" Click="btn_ManuAdd_Click" Name="btn_ManuAdd">Preis Manuel eingeben</Button>
+            <!--<Button Grid.Column="1"  Grid.Row="0" Name="btn_subtrahieren" Click="btn_subtrahieren_Click" >DEL</Button>-->
+            <Button Grid.Column="0"  Grid.Row="1" Name="btn_Zahl_eins" Click="EingabeZahlBtn">1</Button>
+            <Button Grid.Column="1"  Grid.Row="1" Name="btn_Zahl_zwei" Click="EingabeZahlBtn">2</Button>
+            <Button Grid.Column="2"  Grid.Row="1" Name="btn_Zahl_drei" Click="EingabeZahlBtn">3</Button>
+            <Button Grid.Column="0"  Grid.Row="2" Name="btn_Zahl_vier" Click="EingabeZahlBtn">4</Button>
+            <Button Grid.Column="1"  Grid.Row="2" Name="btn_Zahl_fünf" Click="EingabeZahlBtn" >5</Button>
+            <Button Grid.Column="2"  Grid.Row="2" Name="btn_Zahl_sechs" Click="EingabeZahlBtn">6</Button>
+            <Button Grid.Column="0"  Grid.Row="3" Name="btn_Zahl_sieben" Click="EingabeZahlBtn">7</Button>
+            <Button Grid.Column="1"  Grid.Row="3" Name="btn_Zahl_acht" Click="EingabeZahlBtn">8</Button>
+            <Button Grid.Column="2"  Grid.Row="3" Name="btn_Zahl_neun" Click="EingabeZahlBtn">9</Button>
+            <Button Grid.Column="0"  Grid.ColumnSpan="3"  Grid.Row="4" Name="btn_Zahl_null" Click="EingabeZahlBtn">0</Button>
+            <!--<Button Grid.Column="2"  Grid.Row="4" Name="btn_Komma" Click="btn_Komma_Click">,</Button>-->
+            <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Content="Artikel hinzufügen" Click="Button_Click"></Button>
+            
+            
+            <TextBox MouseDoubleClick="tb_EAN_MouseDoubleClick" Name="tb_EAN" Grid.Column="1"  Grid.Row="5" ></TextBox>
+            <TextBox MouseDoubleClick="tb_menge_MouseDoubleClick" Grid.Column="3"  Grid.Row="5" Name="tb_menge" ></TextBox>
+            <Label Grid.Column="0" Grid.Row="5" >Artikelnummer:</Label>
+            <Label Grid.Column="2"  Grid.Row="5">Menge:</Label>
+        </Grid>
+        <Grid Grid.RowSpan="3" Grid.Column="0" Name="posGridButton">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Column="0" Grid.Row="0">
+                <WrapPanel Name="btn_List" Orientation="Horizontal" />
+            </ScrollViewer>
+            <ComboBox Grid.Column="0" Grid.Row="1" Name="cb_kategorie" SelectionChanged="cb_kategorie_SelectionChanged"></ComboBox>
+        </Grid>
+
+       
+
+        
+
+        <Grid Name="posGridListView" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Column="1" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                   
+                </Grid.RowDefinitions>
+
+                <Button Grid.Row="0" Name="btn_del" Click="btn_del_Click">DEL</Button>
+                <Button Grid.Row="1"></Button>
+                <Button Grid.Row="2" Name="btn_zahlung" Click="btn_zahlung_Click">BAR</Button>
+
+
+            </Grid>
+           
+            <ListView  FontSize="12" Name="lv_kasse" >
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding Menge}" Header="Menge" ></GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding ArtikelNummer}" Header="Artikelnummer"></GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding ArtikelBez}" Header="Artikelname"></GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding NettoPreis}" Header="Nettopreis"></GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding Steuer}" Header="Steuer"></GridViewColumn>
+                        <GridViewColumn Width="auto" DisplayMemberBinding="{Binding BruttoPreis}" Header="Bruttopreis"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Border  Grid.Column="0" BorderBrush="Black" BorderThickness="2">
+                    <StackPanel HorizontalAlignment="Center"  Orientation="Horizontal">
+                        <Label  Content="Anzahl Artikel :"/>
+                        <Label  Content="0" Name="lbl_Anzahlartikel"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2">
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <Label   HorizontalAlignment="Left" Content="TOTAL :"/>
+                        <Label   HorizontalAlignment="Right" Name="lbl_totalpreis"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+
+        </Grid >
+
+
+
+    </Grid>
+</Page>

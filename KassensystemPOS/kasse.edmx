@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="KasseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Abrechnungen">
+          <Key>
+            <PropertyRef Name="AbrechnungsID" />
+          </Key>
+          <Property Name="AbrechnungsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SollBestand" Type="money" />
+          <Property Name="AbrechnungsDatum" Type="datetime2" Precision="0" />
+        </EntityType>
+        <EntityType Name="Artikel">
+          <Key>
+            <PropertyRef Name="Artikelnr" />
+          </Key>
+          <Property Name="Artikelnr" Type="int" Nullable="false" />
+          <Property Name="Artikelbez" Type="nvarchar(max)" />
+          <Property Name="Nettopreis" Type="money" />
+          <Property Name="Kategorie" Type="int" />
+          <Property Name="Steuersatz" Type="int" />
+        </EntityType>
+        <EntityType Name="Kategorieliste">
+          <Key>
+            <PropertyRef Name="Kategorie_Nr" />
+          </Key>
+          <Property Name="Kategorie_Nr" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Kategoriename" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Transaktionen">
+          <Key>
+            <PropertyRef Name="RechnungsID" />
+          </Key>
+          <Property Name="RechnungsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NettoGesamtBetrag" Type="money" />
+          <Property Name="Steuer" Type="money" />
+          <Property Name="BruttoBetrag" Type="money" />
+          <Property Name="RechnungsDatum" Type="datetime2" Precision="0" />
+          <Property Name="AbrechnungsID" Type="int" />
+        </EntityType>
+        <EntityType Name="UnternnehmensDaten">
+          <Key>
+            <PropertyRef Name="UnternehmensID" />
+          </Key>
+          <Property Name="UnternehmensID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Straße" Type="nvarchar(max)" />
+          <Property Name="Hausnummer" Type="int" />
+          <Property Name="PLZ" Type="int" />
+          <Property Name="Ort" Type="nvarchar" MaxLength="50" />
+          <Property Name="Tel" Type="bigint" />
+          <Property Name="Steuernummer" Type="bigint" />
+        </EntityType>
+        <Association Name="Artikel$KategorielisteArtikelliste">
+          <End Role="Kategorieliste" Type="Self.Kategorieliste" Multiplicity="0..1" />
+          <End Role="Artikel" Type="Self.Artikel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kategorieliste">
+              <PropertyRef Name="Kategorie_Nr" />
+            </Principal>
+            <Dependent Role="Artikel">
+              <PropertyRef Name="Kategorie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="KasseModelStoreContainer">
+          <EntitySet Name="Abrechnungen" EntityType="Self.Abrechnungen" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Artikel" EntityType="Self.Artikel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kategorieliste" EntityType="Self.Kategorieliste" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transaktionen" EntityType="Self.Transaktionen" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnternnehmensDaten" EntityType="Self.UnternnehmensDaten" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="Artikel$KategorielisteArtikelliste" Association="Self.Artikel$KategorielisteArtikelliste">
+            <End Role="Kategorieliste" EntitySet="Kategorieliste" />
+            <End Role="Artikel" EntitySet="Artikel" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="KasseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Abrechnungen">
+          <Key>
+            <PropertyRef Name="AbrechnungsID" />
+          </Key>
+          <Property Name="AbrechnungsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SollBestand" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="AbrechnungsDatum" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="Artikel">
+          <Key>
+            <PropertyRef Name="Artikelnr" />
+          </Key>
+          <Property Name="Artikelnr" Type="Int32" Nullable="false" />
+          <Property Name="Artikelbez" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Nettopreis" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Kategorie" Type="Int32" />
+          <Property Name="Steuersatz" Type="Int32" />
+          <NavigationProperty Name="Kategorieliste" Relationship="Self.Artikel_KategorielisteArtikelliste" FromRole="Artikel" ToRole="Kategorieliste" />
+        </EntityType>
+        <EntityType Name="Kategorieliste">
+          <Key>
+            <PropertyRef Name="Kategorie_Nr" />
+          </Key>
+          <Property Name="Kategorie_Nr" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Kategoriename" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Artikel" Relationship="Self.Artikel_KategorielisteArtikelliste" FromRole="Kategorieliste" ToRole="Artikel" />
+        </EntityType>
+        <EntityType Name="Transaktionen">
+          <Key>
+            <PropertyRef Name="RechnungsID" />
+          </Key>
+          <Property Name="RechnungsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NettoGesamtBetrag" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Steuer" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="BruttoBetrag" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="RechnungsDatum" Type="DateTime" Precision="0" />
+          <Property Name="AbrechnungsID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="UnternnehmensDaten">
+          <Key>
+            <PropertyRef Name="UnternehmensID" />
+          </Key>
+          <Property Name="UnternehmensID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Straße" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Hausnummer" Type="Int32" />
+          <Property Name="PLZ" Type="Int32" />
+          <Property Name="Ort" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Tel" Type="Int64" />
+          <Property Name="Steuernummer" Type="Int64" />
+        </EntityType>
+        <Association Name="Artikel_KategorielisteArtikelliste">
+          <End Role="Kategorieliste" Type="Self.Kategorieliste" Multiplicity="0..1" />
+          <End Role="Artikel" Type="Self.Artikel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kategorieliste">
+              <PropertyRef Name="Kategorie_Nr" />
+            </Principal>
+            <Dependent Role="Artikel">
+              <PropertyRef Name="Kategorie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="KasseContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Abrechnungen" EntityType="Self.Abrechnungen" />
+          <EntitySet Name="Artikel" EntityType="Self.Artikel" />
+          <EntitySet Name="Kategorieliste" EntityType="Self.Kategorieliste" />
+          <EntitySet Name="Transaktionen" EntityType="Self.Transaktionen" />
+          <EntitySet Name="UnternnehmensDaten" EntityType="Self.UnternnehmensDaten" />
+          <AssociationSet Name="Artikel_KategorielisteArtikelliste" Association="Self.Artikel_KategorielisteArtikelliste">
+            <End Role="Kategorieliste" EntitySet="Kategorieliste" />
+            <End Role="Artikel" EntitySet="Artikel" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="KasseModelStoreContainer" CdmEntityContainer="KasseContext">
+          <EntitySetMapping Name="Abrechnungen">
+            <EntityTypeMapping TypeName="KasseModel.Abrechnungen">
+              <MappingFragment StoreEntitySet="Abrechnungen">
+                <ScalarProperty Name="AbrechnungsID" ColumnName="AbrechnungsID" />
+                <ScalarProperty Name="SollBestand" ColumnName="SollBestand" />
+                <ScalarProperty Name="AbrechnungsDatum" ColumnName="AbrechnungsDatum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Artikel">
+            <EntityTypeMapping TypeName="KasseModel.Artikel">
+              <MappingFragment StoreEntitySet="Artikel">
+                <ScalarProperty Name="Artikelnr" ColumnName="Artikelnr" />
+                <ScalarProperty Name="Artikelbez" ColumnName="Artikelbez" />
+                <ScalarProperty Name="Nettopreis" ColumnName="Nettopreis" />
+                <ScalarProperty Name="Kategorie" ColumnName="Kategorie" />
+                <ScalarProperty Name="Steuersatz" ColumnName="Steuersatz" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kategorieliste">
+            <EntityTypeMapping TypeName="KasseModel.Kategorieliste">
+              <MappingFragment StoreEntitySet="Kategorieliste">
+                <ScalarProperty Name="Kategorie_Nr" ColumnName="Kategorie_Nr" />
+                <ScalarProperty Name="Kategoriename" ColumnName="Kategoriename" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transaktionen">
+            <EntityTypeMapping TypeName="KasseModel.Transaktionen">
+              <MappingFragment StoreEntitySet="Transaktionen">
+                <ScalarProperty Name="RechnungsID" ColumnName="RechnungsID" />
+                <ScalarProperty Name="NettoGesamtBetrag" ColumnName="NettoGesamtBetrag" />
+                <ScalarProperty Name="Steuer" ColumnName="Steuer" />
+                <ScalarProperty Name="BruttoBetrag" ColumnName="BruttoBetrag" />
+                <ScalarProperty Name="RechnungsDatum" ColumnName="RechnungsDatum" />
+                <ScalarProperty Name="AbrechnungsID" ColumnName="AbrechnungsID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnternnehmensDaten">
+            <EntityTypeMapping TypeName="KasseModel.UnternnehmensDaten">
+              <MappingFragment StoreEntitySet="UnternnehmensDaten">
+                <ScalarProperty Name="UnternehmensID" ColumnName="UnternehmensID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Straße" ColumnName="Straße" />
+                <ScalarProperty Name="Hausnummer" ColumnName="Hausnummer" />
+                <ScalarProperty Name="PLZ" ColumnName="PLZ" />
+                <ScalarProperty Name="Ort" ColumnName="Ort" />
+                <ScalarProperty Name="Tel" ColumnName="Tel" />
+                <ScalarProperty Name="Steuernummer" ColumnName="Steuernummer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Kein" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

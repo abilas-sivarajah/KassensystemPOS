@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="KassensystemPOS.App">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KassensystemPOS.Artikel_Hinzufügen" BaseTypeListCollapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAEAAAAAAAABIAAAAAAAAAA=</HashCode>
+      <FileName>Artikel Hinzufügen.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Orientation="Left" Position="1.685" Collapsed="true" />
+  </Class>
+  <Class Name="KassensystemPOS.Artikelverwaltung" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAIAAAgAAAAAAAAAAAAAAAAAIAAAAAAAEAA=</HashCode>
+      <FileName>Artikelverwaltung.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="KassensystemPOS.KasseContext">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAEAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>kasse.Context.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KassensystemPOS.Artikel">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAECAAACAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Artikel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KassensystemPOS.Kategorien">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAACAAAAEAAAAAAAgAAAAAQAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Kategorien.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KassensystemPOS.MainWindow" BaseTypeListCollapsed="true">
+    <Position X="4" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAoAAAA8AAAAAIBAAAAAAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="KassensystemPOS.ManuelleEingabe" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ManuelleEingabe.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="KassensystemPOS.RechnungListe">
+    <Position X="7.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAAAAAAAAA=</HashCode>
+      <FileName>POS.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KassensystemPOS.POS" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACACAAgAAAAAAAAQgCQgIAFAAQAAQAAAIAAAAQAAAAA=</HashCode>
+      <FileName>POS.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="KassensystemPOS.Properties.Resources">
+    <Position X="7.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KassensystemPOS.Properties.Settings">
+    <Position X="5.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

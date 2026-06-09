@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(winget --version)",
+      "Bash(choco --version)",
+      "Bash(winget install:*)",
+      "Bash(sc query:*)",
+      "Bash(PGPASSWORD=postgres /c/Program Files/PostgreSQL/17/bin/psql.exe:*)",
+      "Read(//c/Program Files \\(x86\\)/Microsoft Visual Studio/**)",
+      "Read(//c/Program Files/Microsoft Visual Studio//**)",
+      "Bash(nuget)",
+      "Bash(curl -L \"https://dist.nuget.org/win-x86-commandline/latest/nuget.exe\" -o \"/c/Users/abila/Desktop/KassensystemPOS/nuget.exe\")",
+      "Bash(./nuget.exe install:*)",
+      "Bash(powershell -Command ':*)",
+      "Bash(powershell:*)",
+      "Bash(grep -E \"net4|netstandard2\" find \"/c/Users/abila/Desktop/KassensystemPOS/packages/System.Memory.4.5.3\" -name \"*.dll\")",
+      "Bash(grep -E \"net4|netstandard2\" find \"/c/Users/abila/Desktop/KassensystemPOS/packages/System.Buffers.4.5.0\" -name \"*.dll\")",
+      "Bash(PGPASSWORD=postgres \"/c/Program Files/PostgreSQL/17/bin/psql.exe\" -U postgres -d Kasse -c \"SELECT * FROM public.\\\\\"Artikel\\\\\";\")",
+      "Bash(PGPASSWORD=postgres \"/c/Program Files/PostgreSQL/17/bin/psql.exe\" -U postgres -d Kasse -c \"SELECT * FROM public.\\\\\"Kategorieliste\\\\\";\")",
+      "Bash(PGPASSWORD=postgres \"/c/Program Files/PostgreSQL/17/bin/psql.exe\" -U postgres -c \"ALTER SYSTEM SET log_statement = 'all';\")",
+      "Bash(PGPASSWORD=postgres \"/c/Program Files/PostgreSQL/17/bin/psql.exe\" -U postgres -c \"SELECT pg_reload_conf\\(\\);\")",
+      "Bash(PGPASSWORD=postgres \"/c/Program Files/PostgreSQL/17/bin/psql.exe\" -U postgres -c \"SHOW log_directory;\")",
+      "Bash(PGPASSWORD=postgres \"/c/Program Files/PostgreSQL/17/bin/psql.exe\" -U postgres -c \"SHOW data_directory;\")",
+      "Bash(psql:*)",
+      "Read(//c/Program Files/PostgreSQL/17/bin/**)",
+      "Bash(./psql.exe -U postgres -d Kasse -c \"SELECT * FROM public.\\\\\"Artikel\\\\\";\")",
+      "Bash(PGPASSWORD=postgres C:/Program Files/PostgreSQL/17/bin/psql.exe:*)"
+    ]
+  }
+}

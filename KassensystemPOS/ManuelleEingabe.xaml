@@ -1,0 +1,46 @@
+﻿<Window x:Class="KassensystemPOS.ManuelleEingabe"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KassensystemPOS"
+        mc:Ignorable="d"
+        Title="ManuelleEingabe" Height="150" Width="500">
+    <StackPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+
+
+                <RowDefinition Height="auto" ></RowDefinition>
+                <RowDefinition Height="auto"  ></RowDefinition>
+                <RowDefinition Height="auto"  ></RowDefinition>
+                <RowDefinition Height="auto"  ></RowDefinition>
+              
+
+            </Grid.RowDefinitions>
+            
+            <Label Grid.Column="0" Grid.Row="0">Artikelbezeichnung:</Label>
+            <Label Grid.Column="0" Grid.Row="1">Nettopreis:</Label>
+            <Label Grid.Column="0" Grid.Row="2">Steuersatz:</Label>
+            
+            
+            <TextBox Name="tb_Artikelbez" Grid.Column="1" Grid.Row="0"></TextBox>
+            <TextBox Name="tb_Artikelpreis" Grid.Column="1" Language="DE" Grid.Row="1"></TextBox>
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+                <TextBox Name="tb_Steuersatz" Width="50"></TextBox>
+                <Label>%</Label>
+            </StackPanel>
+            
+
+            <Button Grid.Column="0" Grid.Row="4" Content="Abbrechen" Click="Button_Click"/>
+            <Button Grid.Column="1" Grid.Row="4" Content="Artikel Hinzufügen" Click="Artikel_Add"/>
+
+        </Grid>
+    </StackPanel>
+</Window>
