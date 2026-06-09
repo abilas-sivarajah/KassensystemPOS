@@ -2,10 +2,13 @@
 -- Ausfuehren als: psql -U postgres -f setup_postgres.sql
 
 -- Datenbank erstellen
+-- Hinweis: Keine feste Locale (z.B. German_Germany.1252) angeben, da diese
+-- auf anderen Rechnern fehlen kann und CREATE DATABASE dann fehlschlaegt.
+-- 'C' ist auf jedem System vorhanden und mit UTF8 problemlos nutzbar.
 CREATE DATABASE "Kasse"
     WITH ENCODING = 'UTF8'
-    LC_COLLATE = 'German_Germany.1252'
-    LC_CTYPE = 'German_Germany.1252'
+    LC_COLLATE = 'C'
+    LC_CTYPE = 'C'
     TEMPLATE = template0;
 
 -- Mit der Datenbank verbinden
