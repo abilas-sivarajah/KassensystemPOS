@@ -42,7 +42,8 @@ namespace KassensystemPOS
 
             if (rechnungen.Count == 0)
             {
-                MessageBox.Show("Keine offenen Transaktionen vorhanden");
+                // Beim Anzeigen der Seite keine MessageBox: einfach leere Liste lassen.
+                // Die Meldung kommt nur beim Klick auf "Abrechnen" (Abbrechnen_Click).
                 return;
             }
 

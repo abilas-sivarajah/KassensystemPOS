@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KassensystemPOS"
         mc:Ignorable="d"
-        Title="Artikel Hinzufügen" Loaded="AddArtikel_Loaded" Height="200" Width="500">
+        Title="Artikel Hinzufügen" Height="200" Width="500">
     <StackPanel>
 
         <Grid>
@@ -37,7 +37,8 @@
                 <TextBox Name="tb_Steuersatz" Width="50"></TextBox>
                 <Label>%</Label>
             </StackPanel>
-            <ComboBox Name="cb_kategorie" Grid.Column="1" Grid.Row="4"></ComboBox>
+            <ComboBox Name="cb_kategorie" Grid.Column="1" Grid.Row="4"
+                      DisplayMemberPath="Kategoriename" SelectedValuePath="Kategorie_Nr"></ComboBox>
 
             <Button Grid.Column="0" Grid.Row="5" Content="Abbrechen" Click="Button_Click"/>
             <Button Grid.Column="1" Grid.Row="5" Content="Artikel Hinzufügen" Click="Artikel_Add"/>

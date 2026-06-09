@@ -9,15 +9,14 @@ namespace KassensystemPOS
     public partial class Artikelverwaltung : Page
     {
         ListCollectionView displaylist;
-        DispatcherTimer _refreshTimer;
 
         public Artikelverwaltung()
         {
             InitializeComponent();
-            _refreshTimer = new DispatcherTimer();
-            _refreshTimer.Interval = TimeSpan.FromSeconds(10);
-            _refreshTimer.Tick += (s, e) => Refresh();
-            _refreshTimer.Start();
+            // Liste einmal beim Oeffnen laden. Kein Auto-Refresh-Timer mehr,
+            // sonst wuerde die Auswahl zuruecksetzen und die Textboxen
+            // beim Bearbeiten staendig geleert werden.
+            Refresh();
         }
 
         public void Refresh()

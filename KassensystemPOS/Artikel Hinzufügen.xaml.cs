@@ -8,12 +8,9 @@ namespace KassensystemPOS
         public Artikel_Hinzufügen()
         {
             InitializeComponent();
-        }
-
-        private void AddArtikel_Loaded(object sender, RoutedEventArgs e)
-        {
-            foreach (var item in DB.GetAlleKategorien())
-                cb_kategorie.Items.Add(item.Kategoriename);
+            // Kategorien direkt im Konstruktor laden (feuert garantiert).
+            // ComboBox zeigt "Kategoriename", liefert per SelectedValue die "Kategorie_Nr".
+            cb_kategorie.ItemsSource = DB.GetAlleKategorien();
         }
 
         private void Artikel_Add(object sender, RoutedEventArgs e)
@@ -24,19 +21,19 @@ namespace KassensystemPOS
                 return;
             }
 
-            var kat = DB.GetKategorieByName((string)cb_kategorie.SelectedValue);
-            if (kat == null)
+            if (cb_kategorie.SelectedValue == null)
             {
                 MessageBox.Show("Bitte eine Kategorie auswählen");
                 return;
             }
+            int kategorieNr = (int)cb_kategorie.SelectedValue;
 
             var a = new Artikel
             {
                 Artikelnr  = artikelnr,
                 Artikelbez = tb_Artikelbez.Text,
                 Nettopreis = Convert.ToDecimal(tb_Artikelpreis.Text),
-                Kategorie  = kat.Kategorie_Nr,
+                Kategorie  = kategorieNr,
                 Steuersatz = int.Parse(tb_Steuersatz.Text)
             };
 
