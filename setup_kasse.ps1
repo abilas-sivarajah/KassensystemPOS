@@ -14,18 +14,28 @@
 $ErrorActionPreference = "Stop"
 
 # --- Einstellungen (bei Bedarf anpassen) ---
-$PgBin    = "C:\Program Files\PostgreSQL\17\bin"
 $User     = "postgres"
 $Passwort = "postgres"          # muss zur App.config passen
 $DbName   = "Kasse"
+# Optional: Pfad fest vorgeben. Leer lassen = Version wird automatisch gesucht.
+$PgBin    = ""
 # -------------------------------------------
 
-$psql = Join-Path $PgBin "psql.exe"
-if (-not (Test-Path $psql)) {
-    Write-Host "FEHLER: psql.exe nicht gefunden unter $psql" -ForegroundColor Red
-    Write-Host "Passe oben die Variable \$PgBin an deine PostgreSQL-Version an." -ForegroundColor Yellow
+# psql.exe finden: erst fester Pfad, sonst hoechste installierte Version automatisch
+$psql = $null
+if ($PgBin -and (Test-Path (Join-Path $PgBin "psql.exe"))) {
+    $psql = Join-Path $PgBin "psql.exe"
+} else {
+    $gefunden = Get-ChildItem "C:\Program Files\PostgreSQL\*\bin\psql.exe" -ErrorAction SilentlyContinue |
+                Sort-Object FullName -Descending | Select-Object -First 1
+    if ($gefunden) { $psql = $gefunden.FullName }
+}
+if (-not $psql -or -not (Test-Path $psql)) {
+    Write-Host "FEHLER: psql.exe wurde nicht gefunden." -ForegroundColor Red
+    Write-Host "Ist PostgreSQL installiert? Sonst oben die Variable \$PgBin auf den bin-Ordner setzen." -ForegroundColor Yellow
     Read-Host "Enter zum Beenden"; exit 1
 }
+Write-Host "Verwende: $psql" -ForegroundColor DarkGray
 $env:PGPASSWORD = $Passwort
 
 try {
