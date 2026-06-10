@@ -19,6 +19,8 @@ namespace KassensystemPOS
             abrechnungs_page = new Abrechnung();
             Artverwaltung    = new Artikelverwaltung();
             pos_page         = new POS();
+
+            frame.Content = pos_page; // POS direkt beim Start anzeigen
         }
 
         private void POS_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -32,16 +34,21 @@ namespace KassensystemPOS
             frame.Content = Artverwaltung;
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private void Layout_Rechts_Click(object sender, RoutedEventArgs e)
         {
-            pos_page.posGridButton.SetValue(Grid.ColumnProperty, 1);
-            pos_page.posGridListView.SetValue(Grid.ColumnProperty, 0);
-            pos_page.posGridNumpad.SetValue(Grid.ColumnProperty, 0);
+            pos_page.SetzeLayout(false);
+            Properties.Settings.Default.Linkshaender = false;
+            Properties.Settings.Default.Save(); // dauerhaft merken
+            frame.Content = pos_page;
         }
 
-        private void MenuItem_Click_2(object sender, RoutedEventArgs e) { }
-        private void MenuItem_Click_3(object sender, RoutedEventArgs e) { }
-        private void MenuItem_Click_4(object sender, RoutedEventArgs e) { }
+        private void Layout_Links_Click(object sender, RoutedEventArgs e)
+        {
+            pos_page.SetzeLayout(true);
+            Properties.Settings.Default.Linkshaender = true;
+            Properties.Settings.Default.Save(); // dauerhaft merken
+            frame.Content = pos_page;
+        }
 
         private void AlleRechnungen(object sender, RoutedEventArgs e)
         {

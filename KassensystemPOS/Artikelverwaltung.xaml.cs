@@ -19,25 +19,25 @@ namespace KassensystemPOS
             Refresh();
         }
 
-        public void Refresh()
+        public async void Refresh()
         {
-            displaylist = new ListCollectionView(DB.GetAlleArtikel());
+            displaylist = new ListCollectionView(await DB.GetAlleArtikelAsync());
             parentGrid.DataContext = displaylist;
         }
 
-        private void btn_Delete_Click(object sender, RoutedEventArgs e)
+        private async void btn_Delete_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(tb_artikelnr.Text, out int nr)) return;
-            DB.ArtikelLoeschen(nr);
+            await DB.ArtikelLoeschenAsync(nr);
             MessageBox.Show("Löschen erfolgt");
             Refresh();
         }
 
-        private void btn_update_Click(object sender, RoutedEventArgs e)
+        private async void btn_update_Click(object sender, RoutedEventArgs e)
         {
             var a = (Artikel)displaylist.CurrentItem;
             if (a == null) return;
-            DB.ArtikelAktualisieren(a);
+            await DB.ArtikelAktualisierenAsync(a);
             MessageBox.Show("Aktualisieren erfolgt");
             Refresh();
         }

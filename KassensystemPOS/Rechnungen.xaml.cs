@@ -1,30 +1,22 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
-using System.Windows.Threading;
 
 namespace KassensystemPOS
 {
     public partial class Rechnungen : Page
     {
         List<Transaktionen> rechnungen;
-        DispatcherTimer _refreshTimer;
 
         public Rechnungen()
         {
             InitializeComponent();
-            _refreshTimer = new DispatcherTimer();
-            _refreshTimer.Interval = TimeSpan.FromSeconds(10);
-            _refreshTimer.Tick += (s, e) => Laden();
-            _refreshTimer.Start();
         }
 
-        public void Laden()
+        public async void Laden()
         {
-            rechnungen = DB.GetAlleTransaktionen();
+            rechnungen = await DB.GetAlleTransaktionenAsync();
             dataGrid.DataContext = rechnungen;
         }
 
@@ -36,6 +28,40 @@ namespace KassensystemPOS
                 dataGrid.DataContext = rechnungen.Where(x => x.RechnungsID == id).ToList();
             else
                 dataGrid.DataContext = rechnungen;
+        }
+
+        private async void btn_Storno_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(dataGrid.SelectedItem is Transaktionen sel))
+            {
+                MessageBox.Show("Bitte zuerst eine Rechnung in der Liste auswählen.");
+                return;
+            }
+
+            // Eine Storno-Buchung selbst darf nicht erneut storniert werden.
+            if (sel.StornoVon != null)
+            {
+                MessageBox.Show("Diese Zeile ist selbst eine Storno-Buchung.");
+                return;
+            }
+            // Bereits stornierte Rechnung nicht doppelt stornieren.
+            if (rechnungen != null && rechnungen.Any(x => x.StornoVon == sel.RechnungsID))
+            {
+                MessageBox.Show("Diese Rechnung wurde bereits storniert.");
+                return;
+            }
+
+            var antwort = MessageBox.Show(
+                $"Rechnung {sel.RechnungsID} stornieren?\n\n" +
+                "Es wird eine Gegenbuchung mit negativem Betrag erzeugt.\n" +
+                "Die Originalbuchung bleibt unverändert erhalten.",
+                "Storno", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (antwort != MessageBoxResult.Yes) return;
+
+            await DB.StorniereTransaktionAsync(sel);
+            MessageBox.Show("Storno wurde gebucht.");
+            Laden();
         }
     }
 }

@@ -108,6 +108,7 @@
     </Compile>
     <Compile Include="Abrechnungen.cs" />
     <Compile Include="DB.cs" />
+    <Compile Include="TseService.cs" />
     <Compile Include="Artikel.cs" />
     <Compile Include="Kasse.Context.cs" />
     <Compile Include="Kategorieliste.cs" />

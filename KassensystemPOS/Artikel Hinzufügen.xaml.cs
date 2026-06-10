@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace KassensystemPOS
@@ -8,12 +9,16 @@ namespace KassensystemPOS
         public Artikel_Hinzufügen()
         {
             InitializeComponent();
-            // Kategorien direkt im Konstruktor laden (feuert garantiert).
-            // ComboBox zeigt "Kategoriename", liefert per SelectedValue die "Kategorie_Nr".
-            cb_kategorie.ItemsSource = DB.GetAlleKategorien();
+            _ = LadeKategorienAsync(); // Kategorien im Hintergrund laden
         }
 
-        private void Artikel_Add(object sender, RoutedEventArgs e)
+        private async Task LadeKategorienAsync()
+        {
+            // ComboBox zeigt "Kategoriename", liefert per SelectedValue die "Kategorie_Nr".
+            cb_kategorie.ItemsSource = await DB.GetAlleKategorienAsync();
+        }
+
+        private async void Artikel_Add(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(tb_Artikelnummer.Text, out int artikelnr))
             {
@@ -37,7 +42,7 @@ namespace KassensystemPOS
                 Steuersatz = int.Parse(tb_Steuersatz.Text)
             };
 
-            DB.ArtikelHinzufuegen(a);
+            await DB.ArtikelHinzufuegenAsync(a);
             MessageBox.Show("Artikel erfolgreich hinzugefügt");
             ((MainWindow)Application.Current.MainWindow).Artverwaltung.Refresh();
             Tb_Clear();

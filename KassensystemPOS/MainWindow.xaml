@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KassensystemPOS"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="900">
- 
-    <Grid>
+        Title="Kassensystem POS" Height="700" Width="900">
+
+    <Grid Background="{StaticResource BackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -16,14 +16,12 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Menu Grid.Row="0">
+        <Menu Grid.Row="0" FontSize="15" Padding="4" Background="#2C3E50" Foreground="White">
             <MenuItem Header="Kasse">
                 <MenuItem Header="POS" Click="POS_MenuItem_Click"></MenuItem>
-                <MenuItem Header="Verschiedene Layouts">
-                    <MenuItem Header="Layout 1" Click="MenuItem_Click_1"></MenuItem>
-                    <MenuItem Header="Layout 2" Click="MenuItem_Click_2"></MenuItem>
-                    <MenuItem Header="Layout 3" Click="MenuItem_Click_3"></MenuItem>
-                    <MenuItem Header="Layout 4" Click="MenuItem_Click_4"></MenuItem>
+                <MenuItem Header="Layout">
+                    <MenuItem Header="Rechtshänder" Click="Layout_Rechts_Click"></MenuItem>
+                    <MenuItem Header="Linkshänder" Click="Layout_Links_Click"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Alle Rechnungen" Click="AlleRechnungen"></MenuItem>
                 <MenuItem Header="Abrechnung" Click="Abrechnung"></MenuItem>

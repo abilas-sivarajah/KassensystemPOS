@@ -22,5 +22,17 @@ namespace KassensystemPOS.Properties {
                 return defaultInstance;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Linkshaender {
+            get {
+                return ((bool)(this["Linkshaender"]));
+            }
+            set {
+                this["Linkshaender"] = value;
+            }
+        }
     }
 }

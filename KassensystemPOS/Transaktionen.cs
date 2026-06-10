@@ -20,5 +20,7 @@ namespace KassensystemPOS
         public Nullable<decimal> BruttoBetrag { get; set; }
         public Nullable<System.DateTime> RechnungsDatum { get; set; }
         public Nullable<int> AbrechnungsID { get; set; }
+        public Nullable<int> StornoVon { get; set; }   // RechnungsID der stornierten Originalbuchung
+        public string Zahlart { get; set; }            // "Bar" / "Karte"
     }
 }

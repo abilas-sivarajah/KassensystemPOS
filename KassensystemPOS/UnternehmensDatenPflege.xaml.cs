@@ -14,9 +14,9 @@ namespace KassensystemPOS
             InitializeComponent();
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            aktuell = DB.GetUnternehmensDaten();
+            aktuell = await DB.GetUnternehmensDatenAsync();
 
             if (aktuell != null)
             {
@@ -33,24 +33,24 @@ namespace KassensystemPOS
             }
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
+        private async void button_Click(object sender, RoutedEventArgs e)
         {
             if (aktuell == null) return;
-            DB.UnternehmensDatenAktualisieren(aktuell);
+            await DB.UnternehmensDatenAktualisierenAsync(aktuell);
             MessageBox.Show("Aktualisieren erfolgt");
         }
 
-        private void button_add_Click(object sender, RoutedEventArgs e)
+        private async void button_add_Click(object sender, RoutedEventArgs e)
         {
             if (aktuell == null) return;
-            DB.UnternehmensDatenHinzufuegen(aktuell);
+            await DB.UnternehmensDatenHinzufuegenAsync(aktuell);
             MessageBox.Show("Anlegen erfolgt");
             Page_Loaded(null, null);
         }
 
-        private void button_del_Click(object sender, RoutedEventArgs e)
+        private async void button_del_Click(object sender, RoutedEventArgs e)
         {
-            DB.AlleUnternehmensDatenLoeschen();
+            await DB.AlleUnternehmensDatenLoeschenAsync();
             MessageBox.Show("Löschen erfolgt");
             Page_Loaded(null, null);
         }

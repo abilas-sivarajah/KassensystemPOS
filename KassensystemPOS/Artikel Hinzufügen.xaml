@@ -1,49 +1,43 @@
-﻿<Window x:Class="KassensystemPOS.Artikel_Hinzufügen"
+<Window x:Class="KassensystemPOS.Artikel_Hinzufügen"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KassensystemPOS"
         mc:Ignorable="d"
-        Title="Artikel Hinzufügen" Height="200" Width="500">
-    <StackPanel>
+        Title="Artikel Hinzufügen" Height="430" Width="460"
+        WindowStartupLocation="CenterScreen">
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+    <Border Background="{StaticResource SurfaceBrush}" CornerRadius="12" Margin="18" Padding="24">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.15" BlurRadius="16" ShadowDepth="2" Direction="270"/>
+        </Border.Effect>
+        <StackPanel>
+            <Label Content="Neuen Artikel anlegen" FontSize="22" FontWeight="Bold" Margin="0,0,0,16" Padding="0"/>
 
-            <Grid.RowDefinitions>
+            <Label Content="Artikelnummer" Margin="0,4,0,0"/>
+            <TextBox Name="tb_Artikelnummer"/>
 
+            <Label Content="Artikelbezeichnung" Margin="0,4,0,0"/>
+            <TextBox Name="tb_Artikelbez"/>
 
-                <RowDefinition Height="auto" ></RowDefinition>
-                <RowDefinition Height="auto"  ></RowDefinition>
-                <RowDefinition Height="auto"  ></RowDefinition>
-                <RowDefinition Height="auto"  ></RowDefinition>
-                <RowDefinition Height="auto"  ></RowDefinition>
-                <RowDefinition Height="auto" ></RowDefinition>
+            <Label Content="Nettopreis" Margin="0,4,0,0"/>
+            <TextBox Name="tb_Artikelpreis" Language="DE"/>
 
-            </Grid.RowDefinitions>
-            <Label Grid.Column="0" Grid.Row="0">Artikelnummer:</Label>
-            <Label Grid.Column="0" Grid.Row="1">Artikelbezeichnung:</Label>
-            <Label Grid.Column="0" Grid.Row="2">Nettopreis:</Label>
-            <Label Grid.Column="0" Grid.Row="3">Steuersatz:</Label>
-            <Label Grid.Column="0" Grid.Row="4">Kategorie:</Label>
-            <TextBox Name="tb_Artikelnummer" Grid.Column="1" Grid.Row="0"></TextBox>
-            <TextBox Name="tb_Artikelbez" Grid.Column="1" Grid.Row="1"></TextBox>
-            <TextBox Name="tb_Artikelpreis" Grid.Column="1" Language="DE" Grid.Row="2"></TextBox>
-            <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
-                <TextBox Name="tb_Steuersatz" Width="50"></TextBox>
-                <Label>%</Label>
-            </StackPanel>
-            <ComboBox Name="cb_kategorie" Grid.Column="1" Grid.Row="4"
-                      DisplayMemberPath="Kategoriename" SelectedValuePath="Kategorie_Nr"></ComboBox>
+            <Label Content="Steuersatz (%)" Margin="0,4,0,0"/>
+            <TextBox Name="tb_Steuersatz"/>
 
-            <Button Grid.Column="0" Grid.Row="5" Content="Abbrechen" Click="Button_Click"/>
-            <Button Grid.Column="1" Grid.Row="5" Content="Artikel Hinzufügen" Click="Artikel_Add"/>
+            <Label Content="Kategorie" Margin="0,4,0,0"/>
+            <ComboBox Name="cb_kategorie" DisplayMemberPath="Kategoriename" SelectedValuePath="Kategorie_Nr"/>
 
-        </Grid>
-    </StackPanel>
-  
+            <Grid Margin="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Abbrechen" Click="Button_Click" Background="#7F8C8D"/>
+                <Button Grid.Column="1" Content="Hinzufügen" Click="Artikel_Add"/>
+            </Grid>
+        </StackPanel>
+    </Border>
 </Window>

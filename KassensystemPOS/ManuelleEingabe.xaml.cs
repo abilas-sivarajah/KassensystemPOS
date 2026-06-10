@@ -1,16 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace KassensystemPOS
 {
@@ -19,7 +8,8 @@ namespace KassensystemPOS
     /// </summary>
     public partial class ManuelleEingabe : Window
     {
-        POS pos;
+        readonly POS pos;
+
         public ManuelleEingabe(POS pos)
         {
             this.pos = pos;
@@ -28,9 +18,25 @@ namespace KassensystemPOS
 
         private void Artikel_Add(object sender, RoutedEventArgs e)
         {
-            RechnungListe r = new RechnungListe();
-            r.ArtikelBez = tb_Artikelbez.Text;
-            r.NettoPreis = decimal.Parse(tb_Artikelpreis.Text);
+            if (string.IsNullOrWhiteSpace(tb_Artikelbez.Text))
+            {
+                MessageBox.Show("Bitte eine Bezeichnung eingeben.");
+                return;
+            }
+
+            // Komma wie Punkt akzeptieren, unabhaengig von den Windows-Spracheinstellungen.
+            if (!decimal.TryParse(tb_Artikelpreis.Text.Replace(',', '.'),
+                    NumberStyles.Any, CultureInfo.InvariantCulture, out decimal netto))
+            {
+                MessageBox.Show("Bitte einen gültigen Nettopreis eingeben.");
+                return;
+            }
+
+            int steuersatz = int.TryParse(tb_Steuersatz.Text, out int s) ? s : 0;
+
+            // Manueller Posten hat keine Artikelnummer -> 0
+            pos.ArtikelHinzufuegen(tb_Artikelbez.Text, 0, netto, steuersatz, 1);
+            Close();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

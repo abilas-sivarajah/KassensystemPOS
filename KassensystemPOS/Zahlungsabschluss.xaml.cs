@@ -1,12 +1,13 @@
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Drawing.Printing;
-using Spire.Pdf;
 
 namespace KassensystemPOS
 {
@@ -18,122 +19,163 @@ namespace KassensystemPOS
         public decimal GesamtBrutto;
         public decimal GesamtSteuer;
 
-        public List<int>     AlleMengen;
-        public List<int>     AlleArtikelnummern;
-        public List<string>  AlleArtikelnamen;
-        public List<decimal> AlleNettoPreise;
-        public List<decimal> AlleSteuern;
-        public List<decimal> AlleBruttopreise;
+        readonly POS pos;
+        readonly string _zahlart;
 
-        POS pos;
+        // Austauschbare TSE. Heute Mock; spaeter eine echte Cloud-TSE (fiskaly o.ae.).
+        private static readonly ITseService _tse = new MockTseService();
 
-        public Zahlungsabschluss(POS pos)
+        public Zahlungsabschluss(POS pos, string zahlart)
         {
             this.pos = pos;
+            this._zahlart = zahlart;
             InitializeComponent();
-            AlleArtikelnamen   = pos.AlleArtikelnamen;
-            AlleArtikelnummern = pos.AlleArtikelnummern;
-            AlleMengen         = pos.AlleMengen;
-            AlleNettoPreise    = pos.AlleNettoPreise;
-            AlleSteuern        = pos.AlleSteuern;
-            AlleBruttopreise   = pos.AlleBruttopreise;
+            Title = "Zahlung – " + zahlart;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < AlleNettoPreise.Count; i++)
-            {
-                GesamtBrutto += Math.Round(AlleBruttopreise[i], 2);
-                GesamtNetto  += Math.Round(AlleNettoPreise[i],  2);
-                GesamtSteuer += Math.Round(AlleSteuern[i],      2);
-            }
-            lbl_TotalPreisAnzeige.Content = GesamtBrutto.ToString();
-            lbl_rueckgeldbetrag.Content   = GesamtBrutto.ToString();
+            // Summen direkt aus dem Warenkorb berechnen (eine Quelle der Wahrheit).
+            GesamtNetto  = pos.Warenkorb.Sum(r => r.NettoPreis);
+            GesamtSteuer = pos.Warenkorb.Sum(r => r.Steuer);
+            GesamtBrutto = pos.Warenkorb.Sum(r => r.BruttoPreis);
+            rueckgeld    = -GesamtBrutto; // noch nichts eingezahlt
+
+            lbl_TotalPreisAnzeige.Content = Anzeige(GesamtBrutto);
+            lbl_rueckgeldbetrag.Content   = Anzeige(GesamtBrutto);
         }
+
+        private static string Anzeige(decimal betrag)
+            => betrag.ToString("0.00", CultureInfo.CurrentCulture);
 
         private void txt_rueckgeldeingabe_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txt_rueckgeldeingabe.Text == "")
+            if (string.IsNullOrWhiteSpace(txt_rueckgeldeingabe.Text))
             {
+                einzahlung = 0;
+                rueckgeld  = -GesamtBrutto;
                 lbl_rueckgeldAnzeige.Content = "Noch zu Zahlen";
-                lbl_rueckgeldbetrag.Content  = GesamtBrutto.ToString();
+                lbl_rueckgeldbetrag.Content  = Anzeige(GesamtBrutto);
                 return;
             }
 
-            einzahlung = decimal.Parse(txt_rueckgeldeingabe.Text);
-            rueckgeld  = GesamtBrutto - einzahlung;
+            // Komma wie Punkt akzeptieren.
+            if (!decimal.TryParse(txt_rueckgeldeingabe.Text.Replace(',', '.'),
+                    NumberStyles.Any, CultureInfo.InvariantCulture, out einzahlung))
+                return;
 
-            lbl_rueckgeldAnzeige.Content = rueckgeld <= 0 ? "Rückgeld:" : "Noch zu Zahlen";
-            lbl_rueckgeldbetrag.Content  = rueckgeld.ToString();
+            rueckgeld = einzahlung - GesamtBrutto; // positiv = Rueckgeld, negativ = noch offen
+
+            lbl_rueckgeldAnzeige.Content = rueckgeld >= 0 ? "Rückgeld:" : "Noch zu Zahlen";
+            lbl_rueckgeldbetrag.Content  = Anzeige(Math.Abs(rueckgeld));
         }
 
-        private void btn_Abbruch_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        private void btn_Abbruch_Click(object sender, RoutedEventArgs e) => Close();
 
-        private void btn_Zahlung_Click(object sender, RoutedEventArgs e)
+        private async void btn_Zahlung_Click(object sender, RoutedEventArgs e)
         {
-            if (rueckgeld > 0) return;
-
-            var trans = new Transaktionen
+            if (pos.Warenkorb.Count == 0)
             {
-                BruttoBetrag      = GesamtBrutto,
-                RechnungsDatum    = DateTime.Now,
-                NettoGesamtBetrag = GesamtNetto,
-                Steuer            = GesamtSteuer
-            };
+                MessageBox.Show("Der Warenkorb ist leer.");
+                return;
+            }
+            if (einzahlung < GesamtBrutto)
+            {
+                MessageBox.Show("Der eingezahlte Betrag reicht nicht aus.");
+                return;
+            }
 
-            int rechnungsID = DB.TransaktionHinzufuegen(trans);
+            try
+            {
+                var trans = new Transaktionen
+                {
+                    BruttoBetrag      = GesamtBrutto,
+                    RechnungsDatum    = DateTime.Now,
+                    NettoGesamtBetrag = GesamtNetto,
+                    Steuer            = GesamtSteuer,
+                    Zahlart           = _zahlart
+                };
 
-            MessageBox.Show("Rückgeld: " + rueckgeld.ToString());
-            MessageBox.Show("Zahlung erfolgreich");
-            bool ohneQuittung = toggle_OhneQuittung.IsChecked == true;
-            Close();
-            if (!ohneQuittung)
-                RechnungDrucken(rechnungsID);
-            pos.ClearALL();
+                int rechnungsID = await DB.TransaktionHinzufuegenAsync(trans);
+
+                // TSE signiert JEDEN Vorgang (hier Mock-Signatur).
+                var tseSig = _tse.Signiere($"{rechnungsID};{Anzeige(GesamtBrutto)};{_zahlart}");
+
+                bool ohneQuittung = toggle_OhneQuittung.IsChecked == true;
+                MessageBox.Show("Zahlung erfolgreich.\nRückgeld: " + Anzeige(rueckgeld) + " €");
+
+                if (!ohneQuittung)
+                    await RechnungDruckenAsync(rechnungsID, tseSig);
+
+                pos.ClearALL();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Die Zahlung konnte nicht gespeichert werden:\n\n" + ex.Message,
+                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        public void RechnungDrucken(int rechnungsID)
+        public async Task RechnungDruckenAsync(int rechnungsID, TseSignatur tse)
         {
-            var firma    = DB.GetUnternehmensDaten();
-            string name  = firma?.Name       ?? "";
-            string str   = firma?.Strasse    ?? "";
-            int    hnr   = firma?.Hausnummer ?? 0;
-            int    plz   = firma?.PLZ        ?? 0;
-            string ort   = firma?.Ort        ?? "";
-            long   tel   = firma?.Tel        ?? 0;
+            var firma       = await DB.GetUnternehmensDatenAsync();
+            string name     = firma?.Name         ?? "";
+            string str      = firma?.Strasse      ?? "";
+            int    hnr      = firma?.Hausnummer   ?? 0;
+            int    plz      = firma?.PLZ          ?? 0;
+            string ort      = firma?.Ort          ?? "";
+            long   tel      = firma?.Tel          ?? 0;
             long   steuernr = firma?.Steuernummer ?? 0;
 
-            Document doc = new Document(PageSize.A5);
-            var paragraph = new iTextSharp.text.Paragraph();
-            PdfWriter.GetInstance(doc, new FileStream("Test.pdf", FileMode.Create));
-            doc.Open();
-            paragraph.Add($"          {name}\n\n");
-            paragraph.Add($"Datum: \t {DateTime.Now.ToShortDateString()}\t-\t {DateTime.Now.ToShortTimeString()}\n");
-            paragraph.Add($"Rechnungsnummer: {rechnungsID}\n");
-            paragraph.Add("Menge\t Artikelnummer\t Name\t Nettopreis\n");
-            paragraph.Add("---------------------------------------------------------------------\n");
-            for (int i = 0; i < AlleArtikelnummern.Count; i++)
-                paragraph.Add($"{AlleMengen[i]}\t{AlleArtikelnummern[i]}\t{AlleArtikelnamen[i]}\t{AlleNettoPreise[i]}\n");
-            paragraph.Add("---------------------------------------------------------------------\n");
-            paragraph.Add($"Netto:    {GesamtNetto}€\n");
-            paragraph.Add($"Steuer:   {GesamtSteuer}€\n");
-            paragraph.Add($"TOTAL:    {GesamtBrutto}€\n");
-            paragraph.Add($"Gegeben:  {einzahlung}€\n");
-            paragraph.Add($"Rückgeld: {rueckgeld}€\n");
-            paragraph.Add($"{str} {hnr}\n{plz} {ort}\nTel: {tel}\nSteuernummer: {steuernr}\n");
-            paragraph.Add("                              Auf Wiedersehen\n\n");
-            doc.Add(paragraph);
-            doc.Close();
+            string datei = Path.Combine(Path.GetTempPath(), "Quittung.pdf");
 
-            PrinterSettings settings = new PrinterSettings();
-            Spire.Pdf.PdfDocument pdf = new Spire.Pdf.PdfDocument();
-            pdf.LoadFromFile("Test.pdf");
-            pdf.PrintSettings.PrinterName = settings.PrinterName;
-            pdf.Print();
-            pdf.Dispose();
+            using (var fs = new FileStream(datei, FileMode.Create))
+            {
+                var doc = new Document(PageSize.A5);
+                var paragraph = new iTextSharp.text.Paragraph();
+                PdfWriter.GetInstance(doc, fs);
+                doc.Open();
+                paragraph.Add($"          {name}\n\n");
+                paragraph.Add($"Datum: \t {DateTime.Now.ToShortDateString()}\t-\t {DateTime.Now.ToShortTimeString()}\n");
+                paragraph.Add($"Rechnungsnummer: {rechnungsID}\n");
+                paragraph.Add("Menge\t Artikelnummer\t Name\t Nettopreis\n");
+                paragraph.Add("---------------------------------------------------------------------\n");
+                foreach (var r in pos.Warenkorb)
+                    paragraph.Add($"{r.Menge}\t{r.ArtikelNummer}\t{r.ArtikelBez}\t{r.NettoPreis}\n");
+                paragraph.Add("---------------------------------------------------------------------\n");
+                paragraph.Add($"Netto:    {Anzeige(GesamtNetto)}€\n");
+                paragraph.Add($"Steuer:   {Anzeige(GesamtSteuer)}€\n");
+                paragraph.Add($"TOTAL:    {Anzeige(GesamtBrutto)}€\n");
+                paragraph.Add($"Gegeben:  {Anzeige(einzahlung)}€\n");
+                paragraph.Add($"Rückgeld: {Anzeige(rueckgeld)}€\n");
+                paragraph.Add($"Zahlart:  {_zahlart}\n");
+                paragraph.Add($"{str} {hnr}\n{plz} {ort}\nTel: {tel}\nSteuernummer: {steuernr}\n");
+                paragraph.Add("----- TSE (Mock, nicht zertifiziert) -----\n");
+                paragraph.Add($"TSE-Transaktion: {tse.TransaktionsNummer}\n");
+                paragraph.Add($"Signaturzaehler: {tse.SignaturZaehler}\n");
+                paragraph.Add($"Zeit: {tse.Zeitstempel:dd.MM.yyyy HH:mm:ss}\n");
+                paragraph.Add($"Signatur: {tse.Signatur}\n");
+                paragraph.Add("                              Auf Wiedersehen\n\n");
+                doc.Add(paragraph);
+                doc.Close();
+            }
+
+            try
+            {
+                var settings = new PrinterSettings();
+                using (var pdf = new Spire.Pdf.PdfDocument())
+                {
+                    pdf.LoadFromFile(datei);
+                    pdf.PrintSettings.PrinterName = settings.PrinterName;
+                    pdf.Print();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Die Quittung konnte nicht gedruckt werden:\n\n" + ex.Message,
+                                "Druckfehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 }

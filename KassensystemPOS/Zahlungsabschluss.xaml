@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:KassensystemPOS"
         mc:Ignorable="d"
         Title="Zahlungsabschluss" Height="450" Loaded="Window_Loaded" Width="800">
-    <Grid>
+    <Grid Background="{StaticResource BackgroundBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>

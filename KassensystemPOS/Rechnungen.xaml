@@ -22,12 +22,15 @@
                 <DataGridTextColumn Header="Nettobetrag"  Binding="{Binding NettoGesamtBetrag,StringFormat=N2}"/>
                 <DataGridTextColumn Header="Steuer"  Binding="{Binding Steuer,StringFormat=N2}"/>
                 <DataGridTextColumn Header="Bruttobetrag"  Binding="{Binding BruttoBetrag,StringFormat=N2}"/>
-                <DataGridTextColumn Header="Datum/Uhrzeit"  Binding="{Binding RechnungsDatum,StringFormat=dd.MM.yyyy - ss:mm:hh}"/>
+                <DataGridTextColumn Header="Zahlart"  Binding="{Binding Zahlart}"/>
+                <DataGridTextColumn Header="Storno von"  Binding="{Binding StornoVon}"/>
+                <DataGridTextColumn Header="Datum/Uhrzeit"  Binding="{Binding RechnungsDatum,StringFormat=dd.MM.yyyy - HH:mm:ss}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <DockPanel Grid.Row="1" LastChildFill="True">
-            <Label DockPanel.Dock="Left"  x:Name="label" Content="Rechnungsnummer:" />
-            <TextBox  x:Name="textBox" Width="Auto" TextChanged="textBox_TextChanged"/>
+        <DockPanel Grid.Row="1" LastChildFill="True" Margin="4">
+            <Label DockPanel.Dock="Left" Content="Rechnungsnummer:" VerticalAlignment="Center"/>
+            <Button DockPanel.Dock="Right" Content="Stornieren" Width="150" Click="btn_Storno_Click" Background="#C0392B"/>
+            <TextBox x:Name="textBox" TextChanged="textBox_TextChanged"/>
         </DockPanel>
     </Grid>
 </Page>
